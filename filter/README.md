@@ -1,5 +1,5 @@
 
-************************************Important files*****************************************************************************************************
+## Important files
 
 
 "Tweets.txt": This file contains all the tweets crawled from twitter (13,50,984)
@@ -25,12 +25,7 @@
 
 "unique_user2_ids.txt": this file contains a unique user id after removing duplicate user ids from the file "filtered_user_id.txt" (76,891 unique user ids)
 
-*********************************************ENDS HERE***************************************************************************************************
-
-
-
-
-*****************start final_egypt_friend_list directory*****************
+### final_egypt_friend_list directory
 
 below files are present inside the directory
 
@@ -49,9 +44,3 @@ below files are present inside the directory
 "function.py": this file is requied to create friend netork. this file must be present in the same directory as the above two files
 
 "divide_user.py': this python code will automatically divides all users(whose friend list is to be crawled) into 33 files. 
-
-
-
-*******************END fianl_egypt_friend_list directory*****************
-
-
