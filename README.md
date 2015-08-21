@@ -1,6 +1,11 @@
 # MentionMe
 A mention Recommendation System for Twitter.
 
+## References
+
+* [Modeling Adoption of Competing Products and Conventions in Social Media](http://arxiv.org/pdf/1406.0516v2.pdf)
+* [Retweets—but Not Just Retweets: Quantifying and Predicting Influence on Twitter](http://www.eecs.harvard.edu/econcs/pubs/Rosenman_thesis.pdf)
+
 ## Todos
 
 #### Clean Tweets
