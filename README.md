@@ -29,3 +29,10 @@ A mention Recommendation System for Twitter.
 
 #### Web Interface
 * Create a web interface for online prediction of mentions given a tweet
+
+#### LDA
+* run ```python genCleanTweets.py validTweets.txt tempFileForCleanTweets.txt```. This will clean the tweets and generate in the follwing format ```<TweetId><space><Cleaned Tweet Text>```
+* run ```python tweet_Lda.py tempFileForCleanTweets.txt docTopicFile.txt topicTermFile.txt```. This will generate the topics in the following format.:
+  *  ```docTopicFile.txt : <docId><space><topic0 prob><space><topic1 prob>...```
+  *  ```topicTermFile.txt : <topicId>#<term1><space><prob>#<term2><space><prob>...```
+  
