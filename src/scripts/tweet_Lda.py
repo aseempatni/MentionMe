@@ -45,9 +45,19 @@ def main():
 	# outFile.close()
 
 	vocab = vectorizer.get_feature_names()
-	model = lda.LDA(n_topics=2, n_iter=100, random_state=1)
-	model.fit(tweetDataFeatures)  # model.fit_transform(X) is also available
+
+	loglikelihood = []
+	for numTopics in np.arange(5, 30, 5):
+		model = lda.LDA(n_topics=numTopics, n_iter=1000, random_state=1)
+		model.fit(tweetDataFeatures)  # model.fit_transform(X) is also available
+		loglikelihood.append(model.loglikelihood())
+
+
 	
+	numTopics = 5 + 5*np.argmax(loglikelihood) 
+	model = lda.LDA(n_topics=numTopics, n_iter=1000, random_state=1)
+	model.fit(tweetDataFeatures)  # model.fit_transform(X) is also available
+	loglikelihood.append(model.loglikelihood())
 	docTopicFile = open(sys.argv[2], 'w')
 	docTopic = model.doc_topic_
 	for i in xrange(0,len(cleanTweets)):
