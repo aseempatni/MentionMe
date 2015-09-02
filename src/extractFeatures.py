@@ -22,6 +22,7 @@ def main() :
 	users = generateUserTweetMapping()
 	#Change the value of w in g(t - t')
 	weight_factor = sys.argv[3]
+	out_file = open("Features.txt", 'w')
 
 	with open(sys.argv[1], 'r') as f:
 		for line in f:
@@ -75,6 +76,7 @@ def main() :
 							time_factor = math.exp(weight_factor * abs(tweets[tweet]['timestamp'].total_seconds() - tweets[curr_tweet]['timestamp'].total_seconds()))
 							feature += (tweetTopicScores[tweet][topic] * tweetTopicScores[curr_tweet][topic] * time_factor)
 					features[curr_tweet].append(feature)
+	out_file.write(str(features))
 
 if __name__ == "__main__" :
 	main()
