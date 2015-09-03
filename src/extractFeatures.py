@@ -44,7 +44,7 @@ def main() :
 				tweets[mydict['id']]['id'] = mydict['id']
 				tweets[mydict['id']]['text'] = mydict['text']
 				tweets[mydict['id']]['user'] = mydict['user']['id']
-				tweets[mydict['id']]['timestamp'] = datetime.strptime(str(mydict['created_at']), '%a %b %d %H:%M:%S %z %Y')
+				tweets[mydict['id']]['timestamp'] = datetime.datetime.strptime(str(mydict['created_at']), '%a %b %d %H:%M:%S +0000 %Y')
 			except Exception as e :
 				print e
 	print "Tweets inserted"
