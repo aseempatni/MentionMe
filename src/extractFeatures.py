@@ -4,47 +4,53 @@ import math
 
 def getFriends() :
 	friends = {}
+	all_users = set()
 	with open(sys.argv[2], 'r') as f:
 		for line in f:
 			try :
 				currfriends = eval(line)
 				for currfriend in currfriends :
-					friends[currfriend] = currfriends[currfriend]
+					friends[str(currfriend)] = currfriends[currfriend]
+				for currfriend in currfriends :
+					for friend in currfriends[currfriend] :
+						all_users.add(str(friend))
 			except Exception as e :
 				print line, e
-	return friends
+	return (friends, all_users)
 
 def generateUserTweetMapping() :
 	users = {}
+	all_users = set()
 	with open(sys.argv[1], 'r') as f:
 		for line in f:
 			try:
 				mydict = eval(line)
 				if mydict['user']['id'] not in users :
-					users[mydict['user']['id']] = []
-					users[mydict['user']['id']].append(mydict['id'])
+					users[str(mydict['user']['id'])] = []
+					all_users.add(str(mydict['user']['id']))
+					users[str(mydict['user']['id'])].append(str(mydict['id']))
 				else :
-					users[mydict['user']['id']].append(mydict['id'])
+					users[str(mydict['user']['id'])].append(str(mydict['id']))
 			except Exception as e :
 				print e
-	return users
+	return (users, all_users)
 
 def main() :
 	tweets = {}
-	users = generateUserTweetMapping()
+	(users, users_tweeted) = generateUserTweetMapping()
 	#Change the value of w in g(t - t')
-	weight_factor = sys.argv[3]
+	weight_factor = float(sys.argv[3])
 	out_file = open("Features.txt", 'w')
 
 	with open(sys.argv[1], 'r') as f:
 		for line in f:
 			try:
 				mydict = eval(line)
-				tweets[mydict['id']] = {}
-				tweets[mydict['id']]['id'] = mydict['id']
-				tweets[mydict['id']]['text'] = mydict['text']
-				tweets[mydict['id']]['user'] = mydict['user']['id']
-				tweets[mydict['id']]['timestamp'] = datetime.datetime.strptime(str(mydict['created_at']), '%a %b %d %H:%M:%S +0000 %Y')
+				tweets[str(mydict['id'])] = {}
+				tweets[str(mydict['id'])]['id'] = mydict['id']
+				tweets[str(mydict['id'])]['text'] = mydict['text']
+				tweets[str(mydict['id'])]['user'] = mydict['user']['id']
+				tweets[str(mydict['id'])]['timestamp'] = datetime.datetime.strptime(str(mydict['created_at']), '%a %b %d %H:%M:%S +0000 %Y')
 			except Exception as e :
 				print e
 	print "Tweets inserted"
@@ -58,17 +64,18 @@ def main() :
 		tweetId = ''
 		for term in terms :
 			if i == 0 :
-				tweetTopicScores[term] = []
-				tweetId = term
+				tweetTopicScores[str(term)] = []
+				tweetId = str(term)
 			else :
-				tweetTopicScores[tweetId].append(term)
+				tweetTopicScores[tweetId].append(float(term))
 			i += 1
 	features = {}
 	print "Topic Scores Extracted"
-	user_friends = getFriends()
+	(user_friends, users_friend) = getFriends()
 	print "Friends Read"
 	#Features for user who tweeted the tweet has been extracted. Neighbour's features also extracted.	
 	i = 0
+	print "Num users Tweeted : ", len(users_tweeted), "Num users Friend : ", len(users_friend), "Users Tweeted - Users Friend : ", len(users_tweeted - users_friend), "Users Friend - Users Tweeted : ", len(users_friend - users_tweeted)
 	for user in users :
 		i += 1
 		if i % 100 == 0 :
@@ -83,17 +90,20 @@ def main() :
 				feature = 0
 				for tweet in users[user] :
 					if tweet != curr_tweet :
-						time_factor = math.exp(weight_factor * abs(tweets[tweet]['timestamp'].total_seconds() - tweets[curr_tweet]['timestamp'].total_seconds()))
+						time_factor = math.exp(weight_factor * abs((tweets[tweet]['timestamp'] - tweets[curr_tweet]['timestamp']).total_seconds()))
 						feature += (tweetTopicScores[tweet][topic] * tweetTopicScores[curr_tweet][topic] * time_factor)
 				features[curr_tweet].append(feature)
 
 				#features for a topic of the tweet for a friend of this user
-				for friend in user_friends[user] :
+				for friend in user_friends[str(user)] :
 					feature = 0
-					for tweet in users[friend] :
+					if str(friend) not in users :
+						print 'No tweets found for', str(friend)
+						continue
+					for tweet in users[str(friend)] :
 						if tweet != curr_tweet :
-							time_factor = math.exp(weight_factor * abs(tweets[tweet]['timestamp'].total_seconds() - tweets[curr_tweet]['timestamp'].total_seconds()))
-							feature += (tweetTopicScores[tweet][topic] * tweetTopicScores[curr_tweet][topic] * time_factor)
+							time_factor = math.exp(weight_factor * abs((tweets[tweet]['timestamp'] - tweets[curr_tweet]['timestamp']).total_seconds()))
+							feature += (tweetTopicScores[str(tweet)][topic] * tweetTopicScores[str(curr_tweet)][topic] * time_factor)
 					features[curr_tweet].append(feature)
 	print "Features Computed"
 	out_file.write(str(features))

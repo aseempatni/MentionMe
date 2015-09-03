@@ -37,4 +37,4 @@ A mention Recommendation System for Twitter.
   *  ```topicTermFile.txt : <topicId>#<term1><space><prob>#<term2><space><prob>...```
   
 #### Feature Extraction
-* run ```python extractFeatures.py ValidTweets.txt UserFriends.txt w_score```. This will print the features dictionary which is a dictionary of list of features indexed by tweet Id in ```Features.txt```. w_score is for the ageing factor. UserFriends.txt should be a dictionary of list of friend Ids indexed by userId.
+* run ```python extractFeatures.py ValidTweets.txt friendList_main.txt w_score```. This will print the features dictionary which is a dictionary of list of features indexed by tweet Id in ```Features.txt```. w_score is for the ageing factor. friendListmain.txt should be of the format present in the algeria folder.
