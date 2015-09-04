@@ -32,7 +32,9 @@ A mention Recommendation System for Twitter.
 
 #### LDA
 * run ```python genCleanTweets.py validTweets.txt tempFileForCleanTweets.txt```. This will clean the tweets and generate in the follwing format ```<TweetId><space><Cleaned Tweet Text>```
-* run ```python tweet_Lda.py tempFileForCleanTweets.txt docTopicFile.txt topicTermFile.txt```. This will generate the topics in the following format.:
+* run ```python tweet_Lda.py tempFileForCleanTweets.txt docTopicFile.txt topicTermFile.txt numTopics```. This will generate the topics in the following format.:
   *  ```docTopicFile.txt : <docId><space><topic0 prob><space><topic1 prob>...```
   *  ```topicTermFile.txt : <topicId>#<term1><space><prob>#<term2><space><prob>...```
   
+#### Feature Extraction
+* run ```python extractFeatures.py ../data/algeria/ValidTweets.txt friendList_main.txt w_score ../data/algeria/CleanTweets.txt```. This will print the features dictionary which is a dictionary of list of features indexed by tweet Id in ```Features.txt```. w_score is for the ageing factor. friendListmain.txt should be of the format present in the algeria folder.
