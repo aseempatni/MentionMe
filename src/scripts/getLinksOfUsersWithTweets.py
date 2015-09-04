@@ -1,3 +1,5 @@
+import sys
+
 def main() :
 	validTweetsFile = open(sys.argv[1], 'r')
 	userTweetIds = {}
@@ -39,8 +41,12 @@ def main() :
 
 	validTweetsFile.close()
 
+	i = 0
 	friendListFile = open(sys.argv[2], 'r')
 	for line in friendListFile:
+		i += 1
+		if i%10 == 0:
+			print (i/10), "done"
 		friendJson = eval(line.strip().strip('\n').strip())
 		for key,friends in friendJson.items():
 			user_id = int(key)
@@ -50,10 +56,11 @@ def main() :
 				if friend in userTweetIds.keys():
 					userTweetLinks[user_id] += userTweetIds[friend]
 
+
 	friendListFile.close()
 
 	outputFile = open(sys.argv[3], 'w')
-	for user_id,tweetIds in userTweetLinks:
+	for user_id,tweetIds in userTweetLinks.items():
 		tweetIdsSet = set(tweetIds)
 		if len(tweetIdsSet) > 0:
 			tempDict = {}
@@ -63,7 +70,7 @@ def main() :
 	outputFile.close()
 
 	outputFile2 = open(sys.argv[4], 'w')
-	for user_id,tweetIds in userReTweetIds:
+	for user_id,tweetIds in userReTweetIds.items():
 		tweetIdsSet = set(tweetIds)
 		if len(tweetIdsSet) > 0:
 			tempDict = {}
