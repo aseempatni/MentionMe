@@ -18,13 +18,15 @@ def getFriends() :
 				print line, e
 	return (friends, all_users)
 
-def generateUserTweetMapping() :
+def generateUserTweetMapping(cleanTweets) :
 	users = {}
 	all_users = set()
 	with open(sys.argv[1], 'r') as f:
 		for line in f:
 			try:
 				mydict = eval(line)
+				if str(mydict['id']) not in cleanTweets :
+					continue
 				if mydict['user']['id'] not in users :
 					users[str(mydict['user']['id'])] = []
 					all_users.add(str(mydict['user']['id']))
@@ -37,15 +39,23 @@ def generateUserTweetMapping() :
 
 def main() :
 	tweets = {}
-	(users, users_tweeted) = generateUserTweetMapping()
 	#Change the value of w in g(t - t')
 	weight_factor = float(sys.argv[3])
 	out_file = open("Features.txt", 'w')
-
+	cleanTweets = set()
+	in_clean_tweets_file = open(sys.argv[4], 'r')
+	dataCleanTweets = in_clean_tweets_file.read()
+	lines = dataCleanTweets.split('\n')
+	for line in lines :
+		words = line.split(' ')
+		cleanTweets.add(str(words[0]))
+	(users, users_tweeted) = generateUserTweetMapping(cleanTweets)
 	with open(sys.argv[1], 'r') as f:
 		for line in f:
 			try:
 				mydict = eval(line)
+				if str(mydict['id']) not in cleanTweets :
+					continue
 				tweets[str(mydict['id'])] = {}
 				tweets[str(mydict['id'])]['id'] = mydict['id']
 				tweets[str(mydict['id'])]['text'] = mydict['text']
