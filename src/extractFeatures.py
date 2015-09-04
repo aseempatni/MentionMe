@@ -48,7 +48,8 @@ def main() :
 	lines = dataCleanTweets.split('\n')
 	for line in lines :
 		words = line.split(' ')
-		cleanTweets.add(str(words[0]))
+		if len(words) > 2 :
+			cleanTweets.add(str(words[0]))
 	(users, users_tweeted) = generateUserTweetMapping(cleanTweets)
 	with open(sys.argv[1], 'r') as f:
 		for line in f:
