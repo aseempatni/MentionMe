@@ -1,7 +1,4 @@
-import lda
-from sklearn.feature_extraction.text import CountVectorizer
 import sys
-from bs4 import BeautifulSoup 
 import re
 import lda
 from sklearn.feature_extraction.text import CountVectorizer
@@ -22,14 +19,13 @@ def main():
 				cleanTweets.append(tweetText)
 				cleanTweetIds.append(tweetId)
 			except Exception as e:
-				continue 
-
+				continue
 	
 	vectorizer = CountVectorizer(analyzer = "word",   \
                              tokenizer = None,    \
                              preprocessor = None, \
                              stop_words = None,   \
-                             max_features = 5000) 
+                             max_features = 300) 
 
 	# fit_transform() does two functions: First, it fits the model
 	# and learns the vocabulary; second, it transforms our training data
@@ -46,18 +42,18 @@ def main():
 
 	vocab = vectorizer.get_feature_names()
 
-	loglikelihood = []
-	for numTopics in np.arange(5, 30, 5):
-		model = lda.LDA(n_topics=numTopics, n_iter=1000, random_state=1)
-		model.fit(tweetDataFeatures)  # model.fit_transform(X) is also available
-		loglikelihood.append(model.loglikelihood())
+	#loglikelihood = []
+	#for numTopics in np.arange(5, 10, 5):
+	#	model = lda.LDA(n_topics=numTopics, n_iter=100, random_state=1)
+	#	model.fit(tweetDataFeatures)  # model.fit_transform(X) is also available
+	#	loglikelihood.append(model.loglikelihood())
 
 
 	
-	numTopics = 5 + 5*np.argmax(loglikelihood) 
-	model = lda.LDA(n_topics=numTopics, n_iter=1000, random_state=1)
+	numTopics = 100 #5 + 5*np.argmax(loglikelihood) 
+	model = lda.LDA(n_topics=numTopics, n_iter=100, random_state=1)
 	model.fit(tweetDataFeatures)  # model.fit_transform(X) is also available
-	loglikelihood.append(model.loglikelihood())
+	#loglikelihood.append(model.loglikelihood())
 	docTopicFile = open(sys.argv[2], 'w')
 	docTopic = model.doc_topic_
 	for i in xrange(0,len(cleanTweets)):
@@ -78,6 +74,10 @@ def main():
 			out += '#' + topic_words[k] + ' ' + str(topic_words_prob[k])
 		termTopicFile.write(out + '\n')
 	termTopicFile.close()
+	
+
+
+
 
 if __name__ == '__main__':
 	main()

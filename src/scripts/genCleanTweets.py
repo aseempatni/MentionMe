@@ -37,7 +37,8 @@ def main():
 					if len(textWord)>3 and textWord not in stop:	
 						filteredText += ' ' + textWord
 				filteredText = filteredText.strip()		
-				outFile.write(str(tweetId) + ' ' + filteredText + '\n')
+				if len(filteredText) > 0:
+					outFile.write(str(tweetId) + ' ' + filteredText + '\n')
 			except Exception as e:
 				continue 
 	outFile.close()
