@@ -38,3 +38,6 @@ A mention Recommendation System for Twitter.
   
 #### Feature Extraction
 * run ```python extractFeatures.py ../data/algeria/ValidTweets.txt friendList_main.txt w_score ../data/algeria/CleanTweets.txt```. This will print the features dictionary which is a dictionary of list of features indexed by tweet Id in ```Features.txt```. w_score is for the ageing factor. friendListmain.txt should be of the format present in the algeria folder.
+
+#### Linear Regression
+* run ```python genCoefficientsLinearReg.py ../../data/algeria/Features.txt ../../data/algeria/UserTweetLinks.txt ../../data/algeria/UserReTweetLinks.txt ../../data/algeria/UserLinearRegCoeff.txt``` The output will be generated in the ```../../data/algeria/UserLinearRegCoeff.txt```.
