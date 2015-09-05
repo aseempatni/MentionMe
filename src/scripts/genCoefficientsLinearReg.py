@@ -6,7 +6,7 @@ def main():
 
 	UserTweetLinks = {}
 	UserReTweetLinks = {}
-	tweetFeatures = eval(open(sys.argv[1], 'r').read().strip('\n')):
+	tweetFeatures = eval(open(sys.argv[1], 'r').read().strip('\n'))
 
 	with open(sys.argv[1], 'r') as f:
 		for line in f:
