@@ -1,6 +1,6 @@
 import json
 import subprocess
-
+import time
 config_file = open('config.json','r')
 configs = json.load(config_file)
 config_file.close()
@@ -14,5 +14,5 @@ def spawn_crawlers(keys):
             subprocess.Popen(["python", "crawl_friends.py",key['app_key'],key['app_secret'],in_file])
         except:
             print "Error: unable to start thread"
-
+    time.sleep(5)
 spawn_crawlers(keys)
