@@ -1,34 +1,15 @@
 # MentionMe
-A mention Recommendation System for Twitter.
+
+A mention recommendation system for Twitter.
+
+In Twitter, mentioning (or tagging) users can be considered as an effective way of spreading an information beyond the reach of the followers. In this work, we want to devise a mention-recommendation system for popularizing tweets. We have done some works to figure out the key-driving factors which should be considered while choosing the users to be mentioned. Now, we are working on finding the best way to combine these factors so that we can rank the set of users to be mentioned. We also have to compare the accuracy & time-complexity of our system with state-of-the-art recommender systems.
 
 ## References
 
 * [Modeling Adoption of Competing Products and Conventions in Social Media](http://arxiv.org/pdf/1406.0516v2.pdf)
 * [Retweets—but Not Just Retweets: Quantifying and Predicting Influence on Twitter](http://www.eecs.harvard.edu/econcs/pubs/Rosenman_thesis.pdf)
 
-## Todos
-
-#### Clean Tweets
-* Remove re-tweets whose original tweet is not present.
-
-#### Make graphs
-
-* Make re-tweet graph
-* Make mention graph
-* Make follower graph
-
-#### Get user data
-* Crawl user tweets.
-* Find user interests.
-* Get followers/following to construct network.
-
-#### Mention Ranking
-* Find a mention success score evaluation function.
-* Learn the parameters.
-* Function to recommend top k mentions given a tweet.
-
-#### Web Interface
-* Create a web interface for online prediction of mentions given a tweet
+## Instructions to use
 
 #### LDA
 * run ```python genCleanTweets.py validTweets.txt tempFileForCleanTweets.txt```. This will clean the tweets and generate in the follwing format ```<TweetId><space><Cleaned Tweet Text>```
