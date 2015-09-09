@@ -32,13 +32,19 @@ def crawl_user_data(user):
     out = open(file_name_for(user),'w')
     friends = twitter.get_friends_ids(user_id=user,count=5000)
     json.dump(friends,out)
-    log (user,i)
+    log (user,"done now")
+
+def crawl_more_friends(user):
+    log(user,"TODO: crawl more friends")
+
+def should_crawl_more_friends(user):
+    log(user,"TODO: check crawl more friends")
 
 def should_we_crawl(user):
     file_name = file_name_for(user)
     # if a file exists then we have already tried to crawl the data
     if os.path.isfile(file_name):
-        log(user," already tried.")
+        log(user,"already tried.")
         # if the file is empty, then we should retry
         if os.stat(file_name).st_size == 0:
             log(user,"file empty, retrying")
