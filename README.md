@@ -22,3 +22,18 @@ In Twitter, mentioning (or tagging) users can be considered as an effective way 
 
 #### Linear Regression
 * run ```python genCoefficientsLinearReg.py ../../data/algeria/Features.txt ../../data/algeria/UserTweetLinks.txt ../../data/algeria/UserReTweetLinks.txt ../../data/algeria/UserLinearRegCoeff.txt``` The output will be generated in the ```../../data/algeria/UserLinearRegCoeff.txt```.
+
+#### fastCrawler
+
+##### Prerequisite
+* Put all the app keys in `config.json`
+* List of user ids in `all_user_ids.json`
+
+Now we are ready to start the crawler.
+```
+python main.py
+```
+All the user friends will be crawled and saved in `../../data/friend_id/`. It will automatically take care of following
+* If the user's data is already present, it will be ignored.
+* If data is absent, it will be crawled.
+* TODO: If incomplete, then remaining data will be queried.
