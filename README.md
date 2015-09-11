@@ -11,14 +11,28 @@ In Twitter, mentioning (or tagging) users can be considered as an effective way 
 
 ## Instructions to use
 
-#### LDA
+### LDA
 * run ```python genCleanTweets.py validTweets.txt tempFileForCleanTweets.txt```. This will clean the tweets and generate in the follwing format ```<TweetId><space><Cleaned Tweet Text>```
 * run ```python tweet_Lda.py tempFileForCleanTweets.txt docTopicFile.txt topicTermFile.txt numTopics```. This will generate the topics in the following format.:
   *  ```docTopicFile.txt : <docId><space><topic0 prob><space><topic1 prob>...```
   *  ```topicTermFile.txt : <topicId>#<term1><space><prob>#<term2><space><prob>...```
   
-#### Feature Extraction
+### Feature Extraction
 * run ```python extractFeatures.py ../data/algeria/ValidTweets.txt friendList_main.txt w_score ../data/algeria/CleanTweets.txt```. This will print the features dictionary which is a dictionary of list of features indexed by tweet Id in ```Features.txt```. w_score is for the ageing factor. friendListmain.txt should be of the format present in the algeria folder.
 
-#### Linear Regression
+### Linear Regression
 * run ```python genCoefficientsLinearReg.py ../../data/algeria/Features.txt ../../data/algeria/UserTweetLinks.txt ../../data/algeria/UserReTweetLinks.txt ../../data/algeria/UserLinearRegCoeff.txt``` The output will be generated in the ```../../data/algeria/UserLinearRegCoeff.txt```.
+
+### fastCrawler
+
+* Put all the app keys in `config.json`
+* List of user ids in `all_user_ids.json`
+
+Now we are ready to start the crawler.
+```
+python main.py
+```
+All the user friends will be crawled and saved in `../../data/friend_id/`. It will automatically take care of following
+* If the user's data is already present, it will be ignored.
+* If data is absent, it will be crawled.
+* TODO: If incomplete, then remaining data will be queried.
