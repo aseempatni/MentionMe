@@ -51,7 +51,7 @@ def main():
 
 	
 	numTopics = 100 #5 + 5*np.argmax(loglikelihood) 
-	model = lda.LDA(n_topics=numTopics, n_iter=100, random_state=1)
+	model = lda.LDA(n_topics=numTopics, n_iter=1000, random_state=1)
 	model.fit(tweetDataFeatures)  # model.fit_transform(X) is also available
 	#loglikelihood.append(model.loglikelihood())
 	docTopicFile = open(sys.argv[2], 'w')
@@ -75,6 +75,7 @@ def main():
 		termTopicFile.write(out + '\n')
 	termTopicFile.close()
 	
+
 
 
 

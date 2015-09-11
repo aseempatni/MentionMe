@@ -46,7 +46,7 @@ def main() :
 	for line in friendListFile:
 		i += 1
 		if i%10 == 0:
-			print (i/10), "done"
+			print i, "done"
 		friendJson = eval(line.strip().strip('\n').strip())
 		for key,friends in friendJson.items():
 			user_id = int(key)
@@ -55,12 +55,12 @@ def main() :
 					userTweetLinks[user_id] = []
 				if friend in userTweetIds.keys():
 					userTweetLinks[user_id] += userTweetIds[friend]
-
-
 	friendListFile.close()
 
 	outputFile = open(sys.argv[3], 'w')
-	for user_id,tweetIds in userTweetLinks.items():
+	#print userTweetLinks
+	
+	for user_id,tweetIds  in userTweetLinks.items():
 		tweetIdsSet = set(tweetIds)
 		if len(tweetIdsSet) > 0:
 			tempDict = {}

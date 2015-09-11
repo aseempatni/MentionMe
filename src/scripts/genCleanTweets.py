@@ -1,7 +1,5 @@
-import lda
-from sklearn.feature_extraction.text import CountVectorizer
 import sys
-from bs4 import BeautifulSoup 
+#from bs4 import BeautifulSoup 
 import re
 import nltk
 from nltk.corpus import stopwords
@@ -17,7 +15,8 @@ def main():
 			try:
 				mydict = eval(line)
 				tweetId = mydict['id']
-				text = BeautifulSoup(mydict['text']).get_text()
+				#text = BeautifulSoup(mydict['text']).get_text()
+				text = mydict['text']
 				text = re.sub('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', ' HYPERLINK ', text)
 				text = re.sub('%', ' PERCENTAGE ', text)
 				text = re.sub('\$', ' DOLLAR ', text)
