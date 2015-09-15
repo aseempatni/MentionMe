@@ -14,5 +14,6 @@ def spawn_crawlers(keys):
             subprocess.Popen(["python", "crawl_friends.py",key['app_key'],key['app_secret'],in_file])
         except:
             print "Error: unable to start thread"
-    time.sleep(5)
+    # eait for 60 seconds before spawning next thread
+    time.sleep(60)
 spawn_crawlers(keys)
