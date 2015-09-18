@@ -25,14 +25,11 @@ In Twitter, mentioning (or tagging) users can be considered as an effective way 
 
 ### fastCrawler
 
-* Put all the app keys in `config.json`
-* List of user ids in `all_user_ids.json`
+1. Put all the app keys in `config.json`
+2. List of user ids in `all_user_ids.json`
+3. Now we are ready to start the crawler.` python main.py `
 
-Now we are ready to start the crawler.
-```
-python main.py
-```
 All the user friends will be crawled and saved in `../../data/friend_id/`. It will automatically take care of following
-* If the user's data is already present, it will be ignored.
-* If data is absent, it will be crawled.
-* TODO: If incomplete, then remaining data will be queried.
+  * If the user's data is already present, it will be ignored.
+  * If data is absent, it will be crawled.
+  * TODO: If incomplete, then remaining data will be queried.
