@@ -2,15 +2,7 @@ import json
 import os
 from collections import defaultdict
 import matplotlib.pyplot as plt
-
-def log(user, msg) :
-    print user,':', msg
-
-def get_users_list_from(in_file):
-    f = open('../../data/split_input/'+in_file)
-    all_users = json.load(f)
-    return all_users
-
+from utils import *
 def should_we_crawl(user):
     file_name = file_name_for(user)
     # if a file exists then we have already tried to crawl the data
@@ -57,22 +49,24 @@ def get_stats(users):
         else:
             stats["missing"] += 1
     print d
-    d.pop(5000)
-    d.pop(0)
-    d.pop(1)
-    plt.plot( d.values() )
-    #plt.yscale('log')
-    #plt.xscale('log')
-    plt.xlabel('No of friends')
-    plt.ylabel('No of users')
-    plt.savefig('Frequency')
-    plt.show()
+    plot = False
+    if plot:
+        d.pop(5000)
+        d.pop(0)
+        d.pop(1)
+        plt.plot( d.values() )
+        #plt.yscale('log')
+        #plt.xscale('log')
+        plt.xlabel('No of friends')
+        plt.ylabel('No of users')
+        plt.savefig('Frequency')
+        plt.show()
     return stats
 
 def file_name_for(user):
     file_name = '../../data/friend_id/'+str(user)
     return file_name
 
-users = get_users_list_from("all_user_ids.json")
-print get_stats(users)
-
+if __name__ == "__main__":
+    users = get_users_list_from("all_user_ids.json")
+    print get_stats(users)
