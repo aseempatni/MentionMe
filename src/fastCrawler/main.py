@@ -11,7 +11,7 @@ def spawn_crawlers(keys):
     for key in keys:
         in_file = 'all_user_ids.json'
         try:
-            subprocess.Popen(["python", "crawl_friends.py",key['app_key'],key['app_secret'],in_file])
+            subprocess.Popen(["/usr/bin/python2.7", "crawl_friends.py",key['app_key'],key['app_secret'],in_file])
         except:
             print "Error: unable to start thread"
     # eait for 60 seconds before spawning next thread
