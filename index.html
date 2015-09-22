@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>MentionMe by aseempatni</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">MentionMe</h1>
+      <h2 class="project-tagline">A mention Recommendation System for Twitter.</h2>
+      <a href="https://github.com/aseempatni/MentionMe" class="btn">View on GitHub</a>
+      <a href="https://github.com/aseempatni/MentionMe/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/aseempatni/MentionMe/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="mentionme" class="anchor" href="#mentionme" aria-hidden="true"><span class="octicon octicon-link"></span></a>MentionMe</h1>
+
+<p>A mention recommendation system for Twitter.</p>
+
+<p>In Twitter, mentioning (or tagging) users can be considered as an effective way of spreading an information beyond the reach of the followers. In this work, we want to devise a mention-recommendation system for popularizing tweets. We have done some works to figure out the key-driving factors which should be considered while choosing the users to be mentioned. Now, we are working on finding the best way to combine these factors so that we can rank the set of users to be mentioned. We also have to compare the accuracy &amp; time-complexity of our system with state-of-the-art recommender systems.</p>
+
+<h2>
+<a id="references" class="anchor" href="#references" aria-hidden="true"><span class="octicon octicon-link"></span></a>References</h2>
+
+<ul>
+<li><a href="http://arxiv.org/pdf/1406.0516v2.pdf">Modeling Adoption of Competing Products and Conventions in Social Media</a></li>
+<li><a href="http://www.eecs.harvard.edu/econcs/pubs/Rosenman_thesis.pdf">Retweets—but Not Just Retweets: Quantifying and Predicting Influence on Twitter</a></li>
+</ul>
+
+<h2>
+<a id="instructions-to-use" class="anchor" href="#instructions-to-use" aria-hidden="true"><span class="octicon octicon-link"></span></a>Instructions to use</h2>
+
+<h3>
+<a id="lda" class="anchor" href="#lda" aria-hidden="true"><span class="octicon octicon-link"></span></a>LDA</h3>
+
+<ul>
+<li>run <code>python genCleanTweets.py validTweets.txt tempFileForCleanTweets.txt</code>. This will clean the tweets and generate in the follwing format <code>&lt;TweetId&gt;&lt;space&gt;&lt;Cleaned Tweet Text&gt;</code>
+</li>
+<li>run <code>python tweet_Lda.py tempFileForCleanTweets.txt docTopicFile.txt topicTermFile.txt numTopics</code>. This will generate the topics in the following format.:
+
+<ul>
+<li> <code>docTopicFile.txt : &lt;docId&gt;&lt;space&gt;&lt;topic0 prob&gt;&lt;space&gt;&lt;topic1 prob&gt;...</code>
+</li>
+<li> <code>topicTermFile.txt : &lt;topicId&gt;#&lt;term1&gt;&lt;space&gt;&lt;prob&gt;#&lt;term2&gt;&lt;space&gt;&lt;prob&gt;...</code>
+</li>
+</ul>
+</li>
+</ul>
+
+<h3>
+<a id="feature-extraction" class="anchor" href="#feature-extraction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Feature Extraction</h3>
+
+<ul>
+<li>run <code>python extractFeatures.py ../data/algeria/ValidTweets.txt friendList_main.txt w_score ../data/algeria/CleanTweets.txt</code>. This will print the features dictionary which is a dictionary of list of features indexed by tweet Id in <code>Features.txt</code>. w_score is for the ageing factor. friendListmain.txt should be of the format present in the algeria folder.</li>
+</ul>
+
+<h3>
+<a id="linear-regression" class="anchor" href="#linear-regression" aria-hidden="true"><span class="octicon octicon-link"></span></a>Linear Regression</h3>
+
+<ul>
+<li>run <code>python genCoefficientsLinearReg.py ../../data/algeria/Features.txt ../../data/algeria/UserTweetLinks.txt ../../data/algeria/UserReTweetLinks.txt ../../data/algeria/UserLinearRegCoeff.txt</code> The output will be generated in the <code>../../data/algeria/UserLinearRegCoeff.txt</code>.</li>
+</ul>
+
+<h3>
+<a id="fastcrawler" class="anchor" href="#fastcrawler" aria-hidden="true"><span class="octicon octicon-link"></span></a>fastCrawler</h3>
+
+<ol>
+<li>Put all the app keys in <code>config.json</code>
+</li>
+<li>List of user ids in <code>all_user_ids.json</code>
+</li>
+<li>Now we are ready to start the crawler.<code>python main.py</code>
+</li>
+</ol>
+
+<p>All the user friends will be crawled and saved in <code>../../data/friend_id/</code>. It will automatically take care of following</p>
+
+<ul>
+<li>If the user's data is already present, it will be ignored.</li>
+<li>If data is absent, it will be crawled.</li>
+<li>TODO: If incomplete, then remaining data will be queried.</li>
+</ul>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/aseempatni/MentionMe">MentionMe</a> is maintained by <a href="https://github.com/aseempatni">aseempatni</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
