@@ -1,9 +1,18 @@
 $(document).ready(function(){
     $("#getreco").click(function(){
-        $.ajax({url: "response.json", success: function(result){
+        tweet = $("#tweet").val();
+        ip = "http://10.105.71.202:8080/";
+        url = 'proxy.php';
+        $.ajax({url:url,
+        data:{"tweet":tweet,
+        "url":ip},
+        headers:{"Accept": "application/json"},
+        success: function(result){
+            result = (result);
             x = "<ul>";
-            for (reco in result["recommendations"]) {
-                x+="<li>"+result["recommendations"][reco]["id"]+"</li>";
+            recommendations = result["message"]["recommendations"]
+            for (user in recommendations) {
+                x+="<li>"+recommendations[user]+"</li>";
             }
             x+="</ul>";
             $("#recommendations").html(x);
