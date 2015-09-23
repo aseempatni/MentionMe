@@ -1,4 +1,5 @@
 import json
+import requests
 
 def get_users_list_from(in_file):
     f = open('../../data/split_input/'+in_file)
@@ -8,4 +9,6 @@ def get_users_list_from(in_file):
 def log(user, msg) :
     print user,':', msg
 
-
+def username_from_id(id):
+    r = requests.post("http://tweeterid.com/ajax.php", data={"input":id})
+    return r.text
