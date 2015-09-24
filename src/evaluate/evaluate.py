@@ -6,8 +6,8 @@ def divide_data(data):
     # out of these k will be used to test and
     # the remaining 1 segment will be used for evaluation
     k_segment = []
-    1_segment = []
-    return (k_segment, 1_segment)
+    one_segment = []
+    return (k_segment, one_segment)
 
 def train(data):
     # train our model using the data
@@ -28,7 +28,7 @@ def evaluae(predicted_outcome, actual_outcome):
     performance = performance_from_error(error)
     return performance
 
-def performance_from_error(error)
+def performance_from_error(error):
     # convert error value to performance
     # for example
     performance = 1/error
