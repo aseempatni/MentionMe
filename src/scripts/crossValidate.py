@@ -10,6 +10,7 @@ def main():
 	UserReTweetLinks = {}
 	#tweetFeatures = getFeatures('../../data/algeria/ValidTweets.txt', '../friendList_main.txt', -0.000004, '../../data/algeria/CleanTweets.txt', '../../data/algeria/TweetDocTopic.txt')
 	tweetFeatures = {}
+	tweetLen = {}
 	with open(sys.argv[1], 'r') as f:
 		for line in f:
 			mydict = eval(line.strip('\n'))
@@ -17,7 +18,10 @@ def main():
 				user_id,tweet_id = key
 				if user_id not in tweetFeatures.keys():
 					tweetFeatures[user_id] = {}
-				tweetFeatures[user_id][tweet_id] = value
+					tweetLen[user_id] = len(value)
+				if len(value) == tweetLen[user_id]:
+					tweetFeatures[user_id][tweet_id] = value
+				
 	
 	with open(sys.argv[2], 'r') as f:
 		for line in f:
@@ -33,25 +37,27 @@ def main():
 				UserReTweetLinks[key] = set(value)
 
 	outfile = open(sys.argv[4], 'w')
+	errorfile = open(sys.argv[5], 'w')
 
 	for user_id, tweetIDs in UserTweetLinks.items():
 		if user_id not in tweetFeatures.keys():
 			continue
+		
 		if user_id in UserReTweetLinks.keys():
 			tweetIdNotRetweeted = tweetIDs - UserReTweetLinks[user_id]
 			tweetVec = []
 			tweetTarget = []
 			for tweetId in tweetIdNotRetweeted:
-				if str(tweetId) in tweetFeatures[user_id].keys():
+				if tweetId in tweetFeatures[user_id].keys():
 					tweetVec.append(tweetFeatures[user_id][tweetId][1:])
-					tweetTarget.append(-1)
+					tweetTarget.append(0)
 			#print "Tweeted : ", tweetVec, tweetTarget
 			if len(tweetVec) <= 0:
 				continue
 			tweetReVec = []
 			tweetReTarget = []
 			for tweetId in UserReTweetLinks[user_id]:
-				if str(tweetId) in tweetFeatures[user_id].keys():
+				if tweetId in tweetFeatures[user_id].keys():
 					tweetReVec.append(tweetFeatures[user_id][tweetId][1:])
 					tweetReTarget.append(1)
 			#print "Retweeted : ", tweetReVec, tweetTarget
@@ -60,37 +66,54 @@ def main():
 				
 			tweetVec += tweetReVec
 			tweetTarget += tweetReTarget
-			
 			try:		
-				tempDict = {}
-				#tempDict[user_id] = {}
-				#tempDict[user_id]['meanSquare'] = []
-				#tempDict[user_id]['variance'] = []
-				#kf = cross_validation.KFold(len(tweetTarget), n_folds=5)
+				print len(tweetTarget)
+				if len(tweetTarget) >= 20:
+					tempDict = {}
+					tempDict[user_id] = {}
+					tempDict[user_id]['meanSquare'] = []
+					tempDict[user_id]['variance'] = []
+					kf = cross_validation.KFold(len(tweetTarget), n_folds=5)
 			
-				#for train_index, test_index in kf:
-				#	X_train, X_test = tweetVec[train_index], tweetVec[test_index]
-				#	y_train, y_test = tweetTarget[train_index], tweetTarget[test_index]
-				#	regr = linear_model.LinearRegression()
-				#	regr.fit(X_train, y_train)
-				#	tempDict[user_id]['meanSquare'].append(float(np.mean((regr.predict(X_test) - y_test) ** 2)))
-				#	tempDict[user_id]['variance'].append(float(regr.score(X_test, y_test)))
-				
-				
-				#tempDict[user_id]['averageMeanSquare'] = float(np.mean(tempDict[user_id]['meanSquare']))
-				#tempDict[user_id]['averageVariance'] = float(np.mean(tempDict[user_id]['variance']))
+					for train_index, test_index in kf:
+						X_train = []
+						y_train = []
+						for i in train_index:
+							X_train.append(tweetVec[i])
+							y_train.append(tweetTarget[i])
+                                                X_test = []
+						y_test = []
+                                                for i in test_index:
+                                                        X_test.append(tweetVec[i])
+                                                        y_test.append(tweetTarget[i])
+                                                
+						regr = linear_model.LinearRegression()
+						regr.fit(X_train, y_train)
+						tempDict[user_id]['meanSquare'].append(float(np.mean((regr.predict(X_test) - y_test) ** 2)))
+						tempDict[user_id]['variance'].append(float(regr.score(X_test, y_test)))
+								
+					tempDict[user_id]['averageMeanSquare'] = float(np.mean(tempDict[user_id]['meanSquare']))
+					tempDict[user_id]['averageVariance'] = float(np.mean(tempDict[user_id]['variance']))
+					errorfile.write(str(tempDict)+'\n')
+
+				tempDict = {}
 				regr = linear_model.LinearRegression()
+				#print len(tweetTarget)
 				regr.fit(tweetVec,tweetTarget)
 				tempDict[user_id] = list(regr.coef_)
 				outfile.write(str(tempDict)+'\n')
+				tempDict = {}
+				tempDict[user_id] = float(np.mean((regr.predict(tweetVec) - tweetTarget) ** 2))
+				print tempDict
+				#errorfile.write(str(tempDict)+'\n')
 			
 			except Exception as e:
-				print e
+				print 'error',e
 				continue
 			#break
 
 	outfile.close()
-
+	errorfile.close()
 
 if __name__ == '__main__':
 	main()

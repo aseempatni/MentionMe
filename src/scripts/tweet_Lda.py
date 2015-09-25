@@ -3,7 +3,7 @@ import re
 import lda
 from sklearn.feature_extraction.text import CountVectorizer
 import numpy as np
-
+from sklearn.externals import joblib
 
 def main():
 	
@@ -32,7 +32,8 @@ def main():
 	# into feature vectors. The input to fit_transform should be a list of 
 	# strings.
 	tweetDataFeatures = vectorizer.fit_transform(cleanTweets)
-
+	#joblib.dump(vectorizer, 'vec_count.joblib')
+	#exit()
 	# Numpy arrays are easy to work with, so convert the result to an 
 	# array
 	tweetDataFeatures = tweetDataFeatures.toarray()
@@ -65,13 +66,14 @@ def main():
 
 	termTopicFile = open(sys.argv[3], 'w')
 	topic_word = model.topic_word_  # model.components_ also works
-	n_top_words = int(sys.argv[4])
+	#n_top_words = int(sys.argv[4])
 	for i, topic_dist in enumerate(topic_word):
-		topic_words = np.array(vocab)[np.argsort(topic_dist)][:-n_top_words:-1]
-		topic_words_prob = np.array(np.sort(topic_dist)[:-n_top_words:-1])
+		#topic_words = np.array(vocab)[np.argsort(topic_dist)][:-n_top_words:-1]
+		topic_words_prob = np.array(topic_dist)
 		out = str(i)
-		for k in xrange(0,len(topic_words)):
-			out += '#' + topic_words[k] + ' ' + str(topic_words_prob[k])
+		for k in topic_words_prob:
+			#out += '#' + topic_words[k] + ' ' + str(topic_words_prob[k])
+			out += ' ' + str(float(k)) 
 		termTopicFile.write(out + '\n')
 	termTopicFile.close()
 	
