@@ -18,14 +18,14 @@ def getCoeffs(dict) :
 		dicts[int(key)] = dict[key]['coeff']
 		user_ids.append(int(key))
 	print len(dicts)
-	return (dicts, user_ids)	
+	return (dicts, user_ids)
 
-def recommend_mention(tweet): 
+def recommend_mention(tweet):
 	predictCleanTweets = []
 	predictCleanTweets.append(tweet)
 	topic_word = []
 	# with open(sys.argv[1], 'r') as f:
-	with open('../../data/algeria/TweetTopicTerm_V2.txt', 'r') as f:	
+	with open('../../data/algeria/TweetTopicTerm_V2.txt', 'r') as f:
 		for line in f:
 			try:
 				tweetParts = line.strip('\n').strip().split(' ', 1)
@@ -36,27 +36,27 @@ def recommend_mention(tweet):
 			except Exception as e:
 				print e
 				exit()
-	
+
 	# vectorizer = joblib.load(sys.argv[2])
 	vectorizer = joblib.load('../../data/algeria/vec_count.joblib')
 	tweetPredictDataFeatures = vectorizer.transform(predictCleanTweets)
 	tweetPredictDataFeatures = tweetPredictDataFeatures.toarray()
 	print tweetPredictDataFeatures.shape
 	print tweetPredictDataFeatures[0]
-	topic_pred = []	
+	topic_pred = []
 	for i in xrange(0, len(predictCleanTweets)):
 		cumsum = 0.0
 		for topic_dist in topic_word:
 			sum = 0.0
 			for p in xrange(0,len(topic_dist)):
-				sum += topic_dist[p]*tweetPredictDataFeatures[i][p]	
-			cumsum += sum
+				sum += topic_dist[p]*tweetPredictDataFeatures[i][p]
+			cumsum += sum+1
 			topic_pred.append(sum)
-			
+
 		for i in xrange(0, len(topic_pred)):
 			topic_pred[i] /= cumsum
-		break	
-	
+		break
+
 	recommend = {}
 	tweetTopicScores = getTweetScores("../../data/algeria/TweetDocTopic.txt")
 	print "Topic Scores Retrieved"
