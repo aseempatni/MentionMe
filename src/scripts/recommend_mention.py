@@ -6,11 +6,9 @@ from sklearn.feature_extraction.text import CountVectorizer
 import numpy as np
 from extractFeatures import *
 from sklearn.externals import joblib
+from serializer import *
 
-data_tempDict = {}
-with open('../../data/algeria/UserCoeff.pickle', 'rb') as handle:
-  	data_tempDict = pickle.load(handle)
-
+# Global variables that need to be initialized using init() once the server is initialized.
 tweetTopicScores = {}
 cleanTweets = []
 tweets = []
@@ -19,15 +17,41 @@ users = []
 coeffs = {}
 user_ids = []
 vectorizer = None 
-def getCoeffs(dict) :
-	dicts = {}
-	user_ids = []
-	for key in dict :
-		dicts[int(key)] = (dict[key]['coeff'])
-		user_ids.append(int(key))
-	return (dicts, user_ids)	
 
-def write_everything_one():
+def getCoeffs():
+	coeff_dict = deserialize("UserCoeff")
+	coeffs = {}
+	user_ids = []
+	for key in coeff_dict :
+		coeffs[int(key)] = (coeff_dict[key]['coeff'])
+		user_ids.append(int(key))
+	return (coeffs, user_ids)	
+
+def read_everything():
+	master = deserialize("master")
+	tweetTopicScores = master["tweetTopicScores"]
+	cleanTweets = master["cleanTweets"]
+	tweets = master["tweets"] 
+	user_friends = master["user_friends"]
+	users = master["users"]
+ 	return tweetTopicScores, cleanTweets, tweets, user_friends, users
+
+def pickle_topic_word():
+	topic_word = []
+    with open('../../data/algeria/TweetTopicTerm_V2.txt', 'r') as f:
+        for line in f:
+            try:
+                tweetParts = line.strip('\n').strip().split(' ', 1)
+                tweetId = tweetParts[0]
+                tweetParts = tweetParts[1:][0].split(" ")
+                tweetprob = [float(x) for x in tweetParts]
+                topic_word.append(tweetprob)
+            except Exception as e:
+                print e
+                exit()
+    serialize(topic_word,"tweetTopic")
+
+def pickle_everything_once():
 	tweetTopicScores = getTweetScores("../../data/algeria/TweetDocTopic.txt")
 	print "Topic Scores Retrieved"
 	cleanTweets = getCleanTweets('../../data/algeria/CleanTweets.txt')
@@ -43,51 +67,17 @@ def write_everything_one():
 	master["tweets"] = tweets
 	master["user_friends"] = user_friends
 	master["users"] = users
-	with open('../../data/algeria/master.pickle', 'wb') as handle:
-  		pickle.dump(master, handle)
+  	serialize(master,"master")
+  	pickle_topic_word()
 	return
 
-
-def read_everything():
-	master = {}		
-	with open('../../data/algeria/master.pickle', 'rb') as handle:
-		master = pickle.load(handle)
-	tweetTopicScores = master["tweetTopicScores"]
-	cleanTweets = master["cleanTweets"]
-	tweets = master["tweets"] 
-	user_friends = master["user_friends"]
-	users = master["users"]
- 	return tweetTopicScores, cleanTweets, tweets, user_friends, users
-
-def read_topic_word():
-	topic_word = []
-        with open('../../data/algeria/tweetTopic.pickle', 'rb') as handle:
-                topic_word = pickle.load(handle)
-	return topic_word
-
-
-def pickle_topic_word():
-	topic_word = []
-        with open('../../data/algeria/TweetTopicTerm_V2.txt', 'r') as f:
-                for line in f:
-                        try:
-                                tweetParts = line.strip('\n').strip().split(' ', 1)
-                                tweetId = tweetParts[0]
-                                tweetParts = tweetParts[1:][0].split(" ")
-                                tweetprob = [float(x) for x in tweetParts]
-                                topic_word.append(tweetprob)
-                        except Exception as e:
-                                print e
-                                exit()
-	with open('../../data/algeria/tweetTopic.pickle', 'wb') as handle:
-                pickle.dump(topic_word, handle)
-
+# Initialize the global variables
 def init():
  	global tweetTopicScores, cleanTweets, tweets, user_friends, users, coeffs, user_ids, topic_word, vectorizer
 	print "Initializing"
-	topic_word = read_topic_word()
+	coeffs, user_ids = getCoeffs()
+	topic_word = deserialize("tweetTopic")
 	vectorizer = joblib.load('../../data/algeria/vec_count.joblib')
-	coeffs, user_ids = getCoeffs(data_tempDict)
 	tweetTopicScores, cleanTweets, tweets, user_friends, users = read_everything()
 	print "Initialized"
 
@@ -131,6 +121,6 @@ def recommend_mention(tweet):
 	return recommend
 
 
-
 if __name__ == '__main__':
-	pickle_topic_word()
+	# Run this code independently to pickle all the files.
+	pickle_everything_once()

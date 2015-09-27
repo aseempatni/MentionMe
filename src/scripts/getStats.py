@@ -3,6 +3,7 @@ from sklearn import linear_model
 import numpy as np
 import sys
 from extractFeatures import *
+from serializer import *
 
 # read input data from files
 def get_tweet_and_retweet_links(tweetfile, retweetfile):
@@ -154,10 +155,8 @@ def main():
 				#if (len(tweetReVec) > 0 and len(tweetVec) > len(tweetReVec)) :
 				#	print "Error", len(tweetVec), len(tweetTarget)
 	print i
-	outfile.write(str(tempDict)+'\n')
-	with open('../../data/algeria/UserCoeff.pickle', 'wb') as handle:
-  		pickle.dump(tempDict, handle)
-
+  	serialize(tempDict,"UserCoeff")
+  	
 	out_file.write(str(global_stats) + '\n')
 	for user_id in stats :
 		out_file.write(str(user_id) + ' ' + str(stats[user_id]) + '\n')
