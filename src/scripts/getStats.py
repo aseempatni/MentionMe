@@ -22,13 +22,10 @@ def get_tweet_and_retweet_links(tweetfile, retweetfile):
 			for key,value in myDict.items():
 				UserReTweetLinks[key] = set(value)
 
-	return UserReTweetLinks,UserReTweetLinks
-
-
+	return UserTweetLinks,UserReTweetLinks
 
 def main():
 	UserTweetLinks,UserReTweetLinks = get_tweet_and_retweet_links("../../data/algeria/UserTweetLinks.txt","../../data/algeria/UserReTweetLinks.txt")
-	print UserTweetLinks 
 	# tweetFeatures = getFeatures('../../data/algeria/ValidTweets.txt', '../friendList_main.txt', -0.000004, '../../data/algeria/CleanTweets.txt', '../../data/algeria/TweetDocTopic.txt', UserTweetLinks, UserReTweetLinks)
 
 	out_file = open('stats_val.txt', 'w')
@@ -63,10 +60,9 @@ def main():
 				if len(user_friends[str(user_id)]) >= 1000 :
 					print "Num Friends of User", i - 1, user_id, len(user_friends[str(user_id)])
 					continue
-			i += 1
 			#if i % 2 == 1 :
 			print "User", i - 1, "done"
-			if i == 400 :
+			if i == 200 :
 				break
 			global_stats['users_retweeted'] += 1
 			stats[user_id]['num_tweets_reached'] = len(tweetIDs)
@@ -97,8 +93,9 @@ def main():
 						continue
 					if len(features[tweetId]) == 0 :
 						print tweetId, " has error"
-					tweetVec.append(features[tweetId])
-					tweetTarget.append(0)
+					else:
+						tweetVec.append(features[tweetId])
+						tweetTarget.append(0)
 			stats[user_id]['num_negative_examples'] = len(tweetVec)
 			#print "Tweeted : ", tweetVec, tweetTarget
 			# if len(tweetVec) <= 0:
@@ -111,23 +108,23 @@ def main():
 						continue
 					if len(features[tweetId]) == 0 :
                                                 print tweetId, " has error in RetweetLink"
-					tweetReVec.append(features[tweetId])
-					tweetReTarget.append(1)
+					else:
+						tweetReVec.append(features[tweetId])
+						tweetReTarget.append(1)
 			stats[user_id]['num_positive_examples'] = len(tweetReVec)
 			#print "Retweeted : ", tweetReVec, tweetTarget
 			if len(tweetReVec) <= 0 and len(tweetVec) > 0 :
 				global_stats['users_only_negative'] += 1
 				print "User ", user_id, "ignored as he has only negative examples"
-				i -= 1
 				continue
 			if len(tweetReVec) > 0 and len(tweetVec) <= 0 :
 				global_stats['users_only_positive'] += 1
 				print "User ", user_id, "ignored as he has only	positive examples"
-				i -= 1
 				continue
 			if len(tweetReVec) > 0 and len(tweetVec) > 0 :
 				global_stats['users_both_negative_positive'] += 1 			
 
+		
 			tweetVec += tweetReVec
 			tweetTarget += tweetReTarget
 
@@ -145,6 +142,8 @@ def main():
 				tempDict[user_id]['MSE'] = MSE
 				if MSE > max_MSE :
 					max_MSE = MSE
+				print "user " ,i, "actually done."
+				i+=1
 				#outfile.write(str(tempDict)+'\n')
 			except Exception as e:
 				print e
@@ -154,6 +153,7 @@ def main():
 				print strng
 				#if (len(tweetReVec) > 0 and len(tweetVec) > len(tweetReVec)) :
 				#	print "Error", len(tweetVec), len(tweetTarget)
+	print i
 	outfile.write(str(tempDict)+'\n')
 	with open('../../data/algeria/UserCoeff.pickle', 'wb') as handle:
   		pickle.dump(tempDict, handle)

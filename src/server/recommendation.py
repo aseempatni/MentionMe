@@ -3,7 +3,7 @@
 import sys
 import os
 sys.path.append(os.path.abspath('../scripts'))
-from recommend_mention_v2 import *
+from recommend_mention import *
 
 def get(tweet):
     # Get recommendations for mention given a tweet

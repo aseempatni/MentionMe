@@ -153,25 +153,26 @@ def getTweetFeatures(user, tweetTopicScores, tweets, users, weight_factor, user_
 			feature = 0
 			#print "Num user tweets : ", len(users[str(user)])
 			for tweet in users[str(user)] :
-				time_factor = math.exp(weight_factor * float(abs((tweets[tweet]['timestamp'] - datetime.datetime.now).total_seconds())))
+				time_factor = math.exp(weight_factor * float(abs((tweets[tweet]['timestamp'] - datetime.datetime.now()).total_seconds())))
 				feature += (tweetTopicScores[tweet][topic] * tweetDistributions[topic] * time_factor)
 			features.append(feature)
 
-			#features for a topic of the tweet for a friend of this user
-			num_friends = 0
-			for friend in user_friends[str(user)] :
-				for topic in range(len(tweetTopicScores[str(curr_tweet)])) :
-					feature = 0
-					if str(friend) not in users :
-						#print 'No tweets found for', str(friend)
-						continue
-					num_friends += 1
-					for tweet in users[str(friend)] :
-						time_factor = math.exp(weight_factor * float(abs((tweets[tweet]['timestamp'] - datetime.datetime.now).total_seconds())))
-						feature += (tweetTopicScores[str(tweet)][topic] * tweetDistributions[topic] * time_factor)
-					features.append(feature)
-			if len(features) != ((num_friends + 100)) :
-				print "Error : Num Friends : ", num_friends, " Num Features : ", len(features)," Tweet Id : ", curr_tweet
+		#features for a topic of the tweet for a friend of this user
+		num_friends = 0
+		for friend in user_friends[str(user)] :
+			for topic in range(len(tweetDistributions)) :
+				feature = 0
+				if str(friend) not in users :
+					#print 'No tweets found for', str(friend)
+					continue
+				num_friends += 1
+				for tweet in users[str(friend)] :
+					time_factor = math.exp(weight_factor * float(abs((tweets[tweet]['timestamp'] - datetime.datetime.now()).total_seconds())))
+					feature += (tweetTopicScores[str(tweet)][topic] * tweetDistributions[topic] * time_factor)
+				features.append(feature)
+		print num_friends
+		if len(features) != ((num_friends + 100)) :
+			print "Error : Num Friends : ", num_friends, " Num Features : ", len(features)," Tweet Id : ", curr_tweet
 
 	except Exception as e :
 		print e
