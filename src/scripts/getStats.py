@@ -4,24 +4,31 @@ import numpy as np
 import sys
 from extractFeatures import *
 
-def main():
+# read input data from files
+def get_tweet_and_retweet_links(tweetfile, retweetfile):
 
 	UserTweetLinks = {}
-	UserReTweetLinks = {}
-		
-	with open(sys.argv[1], 'r') as f:
+	UserReTweetLinks = {}		
+
+	with open(tweetfile, 'r') as f:
 		for line in f:
 			myDict = eval(line.strip('\n'))
 			for key,value in myDict.items():
 				UserTweetLinks[key] = set(value)
 
-
-	with open(sys.argv[2], 'r') as f:
+	with open(retweetfile, 'r') as f:
 		for line in f:
 			myDict = eval(line.strip('\n'))
 			for key,value in myDict.items():
 				UserReTweetLinks[key] = set(value)
 
+	return UserReTweetLinks,UserReTweetLinks
+
+
+
+def main():
+	UserTweetLinks,UserReTweetLinks = get_tweet_and_retweet_links("../../data/algeria/UserTweetLinks.txt","../../data/algeria/UserReTweetLinks.txt")
+	print UserTweetLinks 
 	# tweetFeatures = getFeatures('../../data/algeria/ValidTweets.txt', '../friendList_main.txt', -0.000004, '../../data/algeria/CleanTweets.txt', '../../data/algeria/TweetDocTopic.txt', UserTweetLinks, UserReTweetLinks)
 
 	out_file = open('stats_val.txt', 'w')
@@ -59,7 +66,7 @@ def main():
 			i += 1
 			#if i % 2 == 1 :
 			print "User", i - 1, "done"
-			if i == 200 :
+			if i == 400 :
 				break
 			global_stats['users_retweeted'] += 1
 			stats[user_id]['num_tweets_reached'] = len(tweetIDs)
@@ -130,7 +137,8 @@ def main():
 				#print "Model fit"
 				tempDict[user_id] = {}
 				#print "Temp Dict init"
-				tempDict[user_id]['coeff'] = list(regr.coef_)
+				print regr.coef_
+				tempDict[user_id]['coeff'] = regr.coef_[0]
 				#print "List of coeff added"
 				MSE = float(np.mean((regr.predict(tweetVec) - tweetTarget) ** 2))
 				#print "MSE calculated"
@@ -149,31 +157,6 @@ def main():
 	outfile.write(str(tempDict)+'\n')
 	with open('../../data/algeria/UserCoeff.pickle', 'wb') as handle:
   		pickle.dump(tempDict, handle)
-		# else :
-		# 	global_stats['users_only_negative'] += 1
-		# 	global_stats['users_not_retweeted'] += 1
-		# 	tweetVec = []
-		# 	tweetTarget = []
-		# 	for tweetId in tweetIDs:
-		# 		if (user_id, tweetId) in tweetFeatures.keys():
-		# 			tweetVec.append(tweetFeatures[(user_id, tweetId)][1:])
-		# 			tweetTarget.append(-1)
-		# 	stats[user_id]['num_tweets_reached'] = len(tweetIDs)
-		# 	stats[user_id]['num_negative_examples'] = len(tweetVec)
-		# 	try:
-		# 		regr = linear_model.LinearRegression()
-		# 		regr.fit(tweetVec, tweetTarget)
-		# 		tempDict = {}
-		# 		tempDict[user_id] = {}
-		# 		tempDict[user_id]['coeff'] = list(regr.coef_)
-		# 		MSE = float(np.mean((regr.predict(tweetVec) - tweetTarget)**2))
-		# 		tempDict[user_id]['MSE'] = MSE
-		# 		if MSE > max_MSE : 
-		# 			max_MSE = MSE
-		# 		outfile.write(str(tempDict)+'\n')
-		# 	except Exception as e:
-		# 		print e
-		# 		continue
 
 	out_file.write(str(global_stats) + '\n')
 	for user_id in stats :

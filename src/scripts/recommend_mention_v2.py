@@ -15,7 +15,7 @@ def getCoeffs(dict) :
 	dicts = {}
 	user_ids = []
 	for key in dict :
-		dicts[int(key)] = dict[key]['coeff']
+                dicts[int(key)] = list(dict[key]['coeff'])
 		user_ids.append(int(key))
 	print len(dicts)
 	return (dicts, user_ids)
@@ -70,7 +70,7 @@ def recommend_mention(tweet):
 	(coeffs, user_ids) = getCoeffs(data_tempDict)
 
 	for user_id in user_ids:
-		features = getTweetFeatures(user_id, tweetTopicScores, tweets, users, weight_factor, user_friends, topic_pred)
+		features = getTweetFeatures(user_id, tweetTopicScores, tweets, users, -0.000004, user_friends, topic_pred)
 		coeff = coeffs[user_id]
 		prod = features*coeff
 		_sum = 0
