@@ -4,6 +4,10 @@ import mimerender
 import urllib
 import recommendation
 mimerender = mimerender.FlaskMimeRender()
+from signal import signal, SIGPIPE, SIG_IGN
+signal(SIGPIPE,SIG_IGN) 
+
+recommendation.init_rec()
 
 render_xml = lambda message: '<message>%s</message>'%message
 render_json = lambda **args: json.dumps(args)
@@ -21,17 +25,19 @@ app = Flask(__name__)
     json = render_json,
     txt  = render_txt
     )
+
 def greet(tweet='world'):
-    # Given a tweet, we need to find out the recommended mentions here
-    # for not returning a dummy recommendation
-    tweet = urllib.unquote(tweet)
-    tweet = tweet.replace("+"," ")
-    return {
-            'message': {
-                'tweet':tweet,
-                'recommendations':recommendation.get(tweet)
-                }
-            }
+    	# Given a tweet, we need to find out the recommended mentions here
+    	# for not returning a dummy recommendation
+    	tweet = urllib.unquote(tweet)
+    	tweet = tweet.replace("+"," ")
+	response = recommendation.get(tweet)
+    	return {
+    	        'message': {
+    	            	'tweet':tweet,
+    	            	'recommendations':response        
+		}
+	}
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0',port=8080)

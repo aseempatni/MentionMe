@@ -1,9 +1,10 @@
 $(document).ready(function(){
     $("#getreco").click(function(){
         tweet = $("#tweet").val();
-        ip = "http://10.105.71.202:8080/";
+        ip = "http://10.5.30.132:8080/";
         url = 'proxy.php';
         $.ajax({url:url,
+	timeout: 300000,
         data:{"tweet":tweet,
         "url":ip},
         headers:{"Accept": "application/json"},
@@ -11,11 +12,25 @@ $(document).ready(function(){
             result = (result);
             x = "<ul>";
             recommendations = result["message"]["recommendations"]
-            for (user in recommendations) {
-                x+="<li>"+recommendations[user]+"</li>";
+            for (i in recommendations) {
+		user = recommendations[i];
+                x+="<li><a href = 'https://twitter.com/"+user["name"].substring(1)+"'>"+ user["name"] +"</a> ("+user["id"]+")</li>";
+		console.log(user["name"]);
             }
             x+="</ul>";
             $("#recommendations").html(x);
         }});
     });
 });
+
+function get_user_name_from(user_id) {
+	var url = "http://tweeterid.com/ajax.php"
+	$.ajax({
+	url: url,
+	data: {input:user_id},
+	type: 'post',
+	success: function (response) {//response is value returned from php
+		console.log(response)
+	}
+});
+}
