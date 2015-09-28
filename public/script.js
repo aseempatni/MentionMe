@@ -13,9 +13,10 @@ $(document).ready(function(){
             x = "<ul>";
             recommendations = result["message"]["recommendations"]
             for (i in recommendations) {
-		user = recommendations[i];
-                x+="<li><a href = 'https://twitter.com/"+user["name"].substring(1)+"'>"+ user["name"] +"</a> ("+user["id"]+")</li>";
-		console.log(user["name"]);
+                if (user["name"] !="error") {
+                    user = recommendations[i];
+                    x+="<li><a href = 'https://twitter.com/"+user["name"].substring(1)+"'>"+ user["name"] +"</a> ("+user["id"]+")</li>";
+                }
             }
             x+="</ul>";
             $("#recommendations").html(x);

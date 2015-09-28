@@ -4,5 +4,4 @@ def get(id):
     return r.text
 
 if __name__ == "__main__":
-	print "here"
 	print get(39753128)
