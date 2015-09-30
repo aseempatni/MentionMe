@@ -38,39 +38,11 @@
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
                         <li class="active"><a href="#">Home</a></li>
-                        <!--                        <li><a href="#about">About</a></li>
-                            <li><a href="#contact">Contact</a></li>
-                            <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li class="dropdown-header">Nav header</li>
-                            <li><a href="#">Separated link</a></li>
-                            <li><a href="#">One more separated link</a></li>
-                            </ul>
-                            </li>
-                        -->
                     </ul>
-                    <ul
-
-                                   class="nav navbar-nav navbar-right">
-                        <li><a
-                                   href="../navbar/">Default</a></li>
-                        <!--
-                            <li><a
-                            href="../navbar-static-top/">Static
-                            top</a></li>
-                            <li
-                            class="active"><a href="./">Fixed top
-                            <span
-                            class="sr-only">(current)</span></a></li>
-                        -->
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="../navbar/">Default</a></li>
                     </ul>
-                </div><!--/.nav-collapse
-                -->
+                </div><!--/.nav-collapse -->
             </div>
         </nav>
 
@@ -88,9 +60,55 @@
                     <p>
                     In Twitter, mentioning (or tagging) users can be considered as an effective way of spreading an information beyond the reach of the followers. In this work, we want to devise a mention-recommendation system for popularizing tweets. We have done some works to figure out the key-driving factors which should be considered while choosing the users to be mentioned. Now, we are working on finding the best way to combine these factors so that we can rank the set of users to be  mentioned. We also have to compare the accuracy & time-complexity of our system with state-of-the-art recommender systems.
                     </p>
+<div class="row">
+<div class="col-sm-6">
+<h3>
+Sample Tweets
+</h3>
+			<table class="table">
+ <tbody>
+      <tr>
+        <td>#Libya, #Bahrain, #Saudi Arabia, #Algeria, #Yemen, etc. regimes pulling out all stops to counter tide of revolution. It's getting messy</td>
+      </tr>
+	<tr>
+	<td> #Sirya #Algeria said no to the Libyan No Fly Zone. #fail</td>
+	</tr>
+	<tr>
+	<td>#Algeria's president promises political reform</td>
+	</tr>
+<!--
+      <tr>
+        <td>Confirmed caller from Tripoli: African mercenaries are African jews trained in Israel #Libya #Egypt #Tunisia #Algeria #feb17</td>
+      </tr>
+       <tr>
+        <td>BREAKING: Algerian government agrees to lift the emergency state. #Algeria</td>
+      </tr>
+    <tr>
+        <td>Call +16504194196 or +442033184514 and ur voice will go out over twitter to the world #Bahrain #Libya #Algeria @alivein team will translate</td>
+      </tr>
+    <tr>
+        <td>There's no army or police presence in Algeria Square. Protesters have blocked entry to one side with bricks & a truck. #Egypt</td>
+      </tr>
+         <tr>
+        <td>@danielgaijin Christian Radicalism v. Islam http://bit.ly/hD7AuQ #Tunisia #Algeria #Kuwait @DTCSonny @jeannielipp @jessi_archetype</td>
+      </tr>
+    <tr>
+        <td>iProtesters being dispersed in Algiers around 1er Mai sq. Police in every single street. #Algeria #Algerie #ArabRevolt</td>
+      </tr>
+    <tr>
+        <td>@OriginalKebz: Soon Israel wil b the only oppressive reshime in the M.E  #Tunisia #Egypt #Bahrain #Palestine #Yemen #Algeria #democracynow"</td>
+      </tr>
+    <tr>
+        <td>To the govts of #Algeria & #Syria: the #Libyans will remember your actions against us & when your people turn against you we fight with them</td>
+      </tr>
+-->
+      </tbody>
+  </table>
+</div>
+<div class="col-sm-6">
                     <div class="form-horizontal">
                         <div class="form-group">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <textarea id = "tweet" class="form-control" rows="3" placeholder="What would you like to share?" required></textarea>
                             </div>
                         </div>
@@ -99,10 +117,13 @@
                     <div class="btn btn-lg btn-primary" id ="getreco" href="" role="button">Find whom to mention &raquo;</div>
                     </p>
 
+<img id ="image" src="http://www.arabianbusiness.com/skins/ab.main/gfx/loading_spinner.gif" >
         <div id ="recommendations"> </div>
                 </div>
 
         </div>
+</div>
+</div>
         <!-- /container
         -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
