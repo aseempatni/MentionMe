@@ -22,8 +22,9 @@ key = {
     "app_secret": "YdFcoL0R88iGfSaiFGVPY5YSx0ouG5xvHjgfwcvh7r0UOCkYJe"
 }
 
-def crawl_user_data(user):
+def crawl_more_user_data(user):
     # Crawl user friends
+    friendfile = open(str(user),'a+')
     cursor = ''
     while True:
         try:
@@ -31,6 +32,7 @@ def crawl_user_data(user):
                 friends = twitter.get_friends_ids(user_id=user,count=5000)
             else:
                 friends = twitter.get_friends_ids(user_id=user,count=5000,cursor=cursor)
+            json.dump(friends,friendfile)
             cursor = friends['next_cursor_str']
             print cursor
             if cursor=='0':
@@ -47,6 +49,7 @@ def crawl_user_data(user):
             # other exceptions
             print e.__doc__+" "+ e.message
             break
+    friendfile.close()
 
 # read sys args
 app_key = key["app_key"]
@@ -57,4 +60,5 @@ twitter = Twython(app_key, app_secret, oauth_version=2,client_args=client_args)
 ACCESS_TOKEN = twitter.obtain_access_token()
 twitter = Twython(app_key, access_token=ACCESS_TOKEN)
 
-crawl_user_data(user)
+if __name__ == "__main__":
+    crawl_more_user_data(user)

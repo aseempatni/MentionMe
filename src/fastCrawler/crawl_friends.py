@@ -5,7 +5,6 @@ from twython import Twython, TwythonRateLimitError
 import json
 import thread
 import os
-import test_api
 
 # read config
 config_file = open('config.json','r')
@@ -46,8 +45,8 @@ def should_crawl_more_friends(user):
     	    with open(file_name,'r') as friends:
     	        x = json.load(friends)
                 if len(x["ids"]) >=5000:
-                    return true
-    return false
+                    return True
+    return False
 
 def should_we_crawl(user):
     file_name = file_name_for(user)
@@ -64,7 +63,7 @@ def should_we_crawl(user):
     else:
         return True
 
-def start_crawler(users):
+def start_crawler_old(users):
     i=0
     while i<len(all_users):
         user = all_users[i]
@@ -84,10 +83,41 @@ def start_crawler(users):
                 # other exceptions
                 log(user,e.__doc__+" "+ e.message)
 
+
+def crawl_user_friends(user):
+    # Crawl user friends
+    friendfile = open("output/"+str(user),'a+')
+    cursor = ''
+    while True:
+        try:
+            if cursor=='':
+                friends = twitter.get_friends_ids(user_id=user,count=5000)
+            else:
+                friends = twitter.get_friends_ids(user_id=user,count=5000,cursor=cursor)
+            json.dump(friends,friendfile)
+            cursor = friends['next_cursor_str']
+            print cursor
+            if cursor=='0':
+                # all friends done
+                break
+        except TwythonRateLimitError:
+            # rate limit reached
+            reset = int(twitter.get_lastfunction_header('x-rate-limit-reset'))
+            msg =  "waiting for "+str(reset - time.time())+ ' sec'
+            print msg
+            wait = max(reset - time.time(), 0) + 10 # addding 10 second pad
+            time.sleep(wait)
+        except Exception as e:
+            # other exceptions
+            print e.__doc__+" "+ e.message
+            break
+    friendfile.close()
+
 # read sys args
 app_key = sys.argv[1]
 app_secret = sys.argv[2]
 in_file = sys.argv[3]
+process_number = int(sys.argv[4])
 
 # initialize twython
 twitter = Twython(app_key, app_secret, oauth_version=2,client_args=client_args)
@@ -96,32 +126,22 @@ twitter = Twython(app_key, access_token=ACCESS_TOKEN)
 
 all_users = get_users_list_from(in_file)
 
+max_process=10
+
 # start crawler
 def crawl():
     print "Crawler initialized:" ,sys.argv[1], sys.argv[2]
     start_crawler(all_users)
 
 def crawl_more():
-    print "Crawling more friends" ,sys.argv[1], sys.argv[2]
+    print "Crawling friends" ,sys.argv[1], sys.argv[2], sys.argv[4]
     i=0
+    count=0
     while i<len(all_users):
-        user = all_users[i]
-        i+=1
-        if should_crawl_more_friends(user):
-            print user
-            break
-            try:
-                crawl_user_data(user)
-            except TwythonRateLimitError:
-                # rate limit reached
-                reset = int(twitter.get_lastfunction_header('x-rate-limit-reset'))
-                msg =  "waiting for "+str(reset - time.time())+ ' sec'
-                log(user,msg)
-                wait = max(reset - time.time(), 0) + 10 # addding 10 second pad
-                time.sleep(wait)
-                i-=1
-            except Exception as e:
-                # other exceptions
-                log(user,e.__doc__+" "+ e.message)
-
+	if i%max_process==process_number:
+        	user = all_users[i]
+        	if should_crawl_more_friends(user):
+        	    crawl_user_friends(user)
+		    count+=1
+	i+=1
 crawl_more()
