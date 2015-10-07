@@ -5,6 +5,7 @@ from twython import Twython, TwythonRateLimitError
 import json
 import thread
 import os
+import test_api
 
 # read config
 config_file = open('config.json','r')
@@ -35,10 +36,18 @@ def crawl_user_data(user):
     log (user,"done now")
 
 def crawl_more_friends(user):
-    log(user,"TODO: crawl more friends")
+    log(user,"TODO: crawl more friends for user: "+user)
 
+# checks if the user has 5000 friends
 def should_crawl_more_friends(user):
-    log(user,"TODO: check crawl more friends")
+    file_name = file_name_for(user)
+    if os.path.isfile(file_name):
+        if os.stat(file_name).st_size != 0:
+    	    with open(file_name,'r') as friends:
+    	        x = json.load(friends)
+                if len(x["ids"]) >=5000:
+                    return true
+    return false
 
 def should_we_crawl(user):
     file_name = file_name_for(user)
@@ -85,7 +94,34 @@ twitter = Twython(app_key, app_secret, oauth_version=2,client_args=client_args)
 ACCESS_TOKEN = twitter.obtain_access_token()
 twitter = Twython(app_key, access_token=ACCESS_TOKEN)
 
-# start crawler
-print "Crawler initialized:" ,sys.argv[1], sys.argv[2]
 all_users = get_users_list_from(in_file)
-start_crawler(all_users)
+
+# start crawler
+def crawl():
+    print "Crawler initialized:" ,sys.argv[1], sys.argv[2]
+    start_crawler(all_users)
+
+def crawl_more():
+    print "Crawling more friends" ,sys.argv[1], sys.argv[2]
+    i=0
+    while i<len(all_users):
+        user = all_users[i]
+        i+=1
+        if should_crawl_more_friends(user):
+            print user
+            break
+            try:
+                crawl_user_data(user)
+            except TwythonRateLimitError:
+                # rate limit reached
+                reset = int(twitter.get_lastfunction_header('x-rate-limit-reset'))
+                msg =  "waiting for "+str(reset - time.time())+ ' sec'
+                log(user,msg)
+                wait = max(reset - time.time(), 0) + 10 # addding 10 second pad
+                time.sleep(wait)
+                i-=1
+            except Exception as e:
+                # other exceptions
+                log(user,e.__doc__+" "+ e.message)
+
+crawl_more()
