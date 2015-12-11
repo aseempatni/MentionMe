@@ -45,8 +45,8 @@ def getReTweetInfo(cleanTweets, tweetFile) :
 	return tweets
 
 user_friends, tweetInfo = read_everything() #load from pickle
-cleanTweets = getCleanTweets('somefile_1')
-retweets = getReTweetInfo(cleanTweets,'somefile_2') #load from pickle
+cleanTweets = getCleanTweets('../../data/algeria/CleanTweets.txt')
+retweets = getReTweetInfo(cleanTweets, '../../data/algeria/ValidTweets.txt') #load from pickle
 
 
 def getAlpha(curTimeStamp):
