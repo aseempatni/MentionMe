@@ -59,18 +59,18 @@ def getK(s, curTimeStamp):
 	return max(1-2*s/timestamp, 0.0)
 
 
-def find_pt(curTimeStamp): #find infectiousness
+def find_pt(tweetId, curTimeStamp): #find infectiousness
 	R_t_tilde = 0.0
 	N_et_tilde = 0
 
 	for retweetId in retweets[tweetId]:
-		timeStamp = tweetInfo['timestamp']
+		timeStamp = tweetInfo[tweetId]['timestamp']
 		R_t_tilde += getK(curTimeStamp - timestamp, curTimeStamp)
 
 	for retweetId in retweets[tweetId]:
-		userWhoRetweeted = tweetInfo['userid']
-		timeStamp = tweetInfo['timestamp']
-		n_i = user_friends[userWhoRetweeted]
+		userWhoRetweeted = tweetInfo[tweetId]['userid']
+		timeStamp = tweetInfo[tweetId]['timestamp']
+		n_i = user_friends[str(userWhoRetweeted)]
 		N_et_tilde += n_i*getK(curTimeStamp - timestamp, curTimeStamp)*( math.exp(curTimeStamp - timestamp) - 1 )
 
 	return R_t_tilde/N_et_tilde 
@@ -78,7 +78,7 @@ def find_pt(curTimeStamp): #find infectiousness
 
 def seismic(tweetId): #return final number of reshares
 	
-	curTimeStamp = tweetInfo['timestamp']
+	curTimeStamp = tweetInfo[tweetId]['timestamp']
 
 	N_c = 0.0
 	N_et = 0.0
@@ -87,8 +87,8 @@ def seismic(tweetId): #return final number of reshares
 	tot_cnt = 0.0
 
 	for retweetId in retweets[tweetId]:
-		userWhoRetweeted = tweetInfo['userid']
-		timeStamp = tweetInfo['timestamp']
+		userWhoRetweeted = tweetInfo[tweetId]['userid']
+		timeStamp = tweetInfo[tweetId]['timestamp']
 		n_i = user_friends[userWhoRetweeted]
 		N_c += n_i
 		N_et += n_i*( math.exp(curTimeStamp - timestamp) - 1 )
@@ -111,8 +111,8 @@ def seismic(tweetId): #return final number of reshares
 if __name__ == '__main__':
 
 	wfile = open('somefile.txt')
-	for tweetId in tweetInfo.keys():
-		wfile.write(str(tweetId) + ' ' + str(seismic(tweetId)) + '\n')
+	for tweetId in retweets.keys():
+		wfile.write(str(tweetId) + ' ' + str(seismic(str(tweetId))) + '\n')
 		wfile.flush()
 	wfile.close()
 
