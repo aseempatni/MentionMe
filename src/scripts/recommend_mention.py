@@ -36,6 +36,11 @@ def read_everything():
 	users = master["users"]
  	return tweetTopicScores, cleanTweets, tweets, user_friends, users
 
+def read_tweets():
+	master = deserialize("master")
+	tweets = master["tweets"]
+	return tweets
+
 def pickle_topic_word():
 	topic_word = []
     with open('../../data/algeria/TweetTopicTerm_V2.txt', 'r') as f:

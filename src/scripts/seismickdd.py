@@ -1,9 +1,52 @@
 import sys
 import math
 
-user_friends = {} #load from pickle
-retweets = {} #load from pickle
-tweetInfo = {} #load from pickle
+def read_everything():
+	master = deserialize("master")
+	# tweetTopicScores = master["tweetTopicScores"]
+	# cleanTweets = master["cleanTweets"]
+	tweets = master["tweets"] 
+	user_friends = master["user_friends"]
+	# users = master["users"]
+ 	return tweets, user_friends
+
+def getCleanTweets(cleanTweetFile) :
+	cleanTweets = set()
+	in_clean_tweets_file = open(cleanTweetFile, 'r')
+	dataCleanTweets = in_clean_tweets_file.read()
+	lines = dataCleanTweets.split('\n')
+	for line in lines :
+		words = line.split(' ')
+		cleanTweets.add(str(words[0]))
+	print "Num Clean Tweets : ", len(cleanTweets)
+	return cleanTweets
+
+def getReTweetInfo(cleanTweets, tweetFile) :
+	try:
+		retweets = pickle.load(open('RetweetsSeismic.pickle','rb'))
+		return retweets
+	except Exception as e:
+		print 'Will be making the retweets file'	
+	retweets = {}
+	with open(tweetFile, 'r') as f:
+		for line in f:
+			try:
+				mydict = eval(line)
+				if str(mydict['id']) not in cleanTweets :
+					continue
+				if 'retweeted_status' in mydict and 'id' in mydict['retweeted_status']:
+					orig_tweet_id = mydict['retweeted_status']['id']
+					if orig_tweet_id in retweets.keys():
+						retweets[str(orig_tweet_id)] = []
+					retweets[orig_tweet_id].append(str(mydict['id']))
+			except Exception as e :
+				print e
+	pickle.dump(retweets, open('RetweetsSeismic.pickle', 'wb'))
+	return tweets
+
+user_friends, tweetInfo = read_everything() #load from pickle
+cleanTweets = getCleanTweets('somefile_1')
+retweets = getReTweetInfo(cleanTweets,'somefile_2') #load from pickle
 
 
 def getAlpha(curTimeStamp):
